@@ -11,7 +11,7 @@ import {
 import type { OptionSwatch, Product, ProductVariant } from "@/lib/types"
 import { addCartLines } from "@/app/cart/actions"
 import { useCartStore } from "@/lib/cart"
-import { goToCheckout } from "@/lib/checkout"
+import { goToCheckoutDirect } from "@/lib/checkout"
 
 interface ProductFormProps {
   product: Product
@@ -114,7 +114,7 @@ export function ProductForm({
   const isAvailable = !!selectedVariant?.availableForSale
   const canSubmit = isAvailable && !isPending && !!selectedVariant
 
-  const addToCart = (then: "open-drawer" | "checkout") => {
+  const addToCart = () => {
     if (!selectedVariant) return
     startTransition(async () => {
       const result = await addCartLines([
@@ -122,9 +122,13 @@ export function ProductForm({
       ])
       if (!result.cart) return
       setCart(result.cart)
-      if (then === "open-drawer") openCart()
-      else goToCheckout(result.cart)
+      openCart()
     })
+  }
+
+  const buyNow = () => {
+    if (!selectedVariant) return
+    goToCheckoutDirect(selectedVariant.id)
   }
 
   return (
@@ -190,7 +194,7 @@ export function ProductForm({
         <button
           type="button"
           disabled={!canSubmit}
-          onClick={() => addToCart("open-drawer")}
+          onClick={addToCart}
           className={cn(
             "h-12 w-full cursor-pointer rounded-lg border-2 border-[#1C1C15] bg-white font-semibold text-[#1C1C15] transition-opacity",
             !canSubmit && "cursor-not-allowed opacity-50",
@@ -202,7 +206,7 @@ export function ProductForm({
         <button
           type="button"
           disabled={!canSubmit}
-          onClick={() => addToCart("checkout")}
+          onClick={buyNow}
           className={cn(
             "h-12 w-full cursor-pointer rounded-lg border-2 border-[#1C1C15] bg-[#1C1C15] font-semibold text-white transition-opacity",
             !canSubmit && "cursor-not-allowed opacity-50",

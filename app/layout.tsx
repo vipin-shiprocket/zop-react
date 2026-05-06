@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { CartInit } from "@/components/cart/cart-init"
+import { ShiprocketLoader } from "@/components/checkout/shiprocket-loader"
 import { getCart } from "@/app/cart/actions"
 import { FOOTER_QUERY, HEADER_QUERY } from "@/lib/queries"
 import { shopifyClient } from "@/lib/shopify"
@@ -89,6 +90,7 @@ export default async function RootLayout({
         />
         <CartInit cart={cart} />
         <CartDrawer />
+        <ShiprocketLoader />
       </body>
     </html>
   )

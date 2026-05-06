@@ -26,3 +26,13 @@ export function goToCheckout(cart: Cart) {
     window.location.href = cart.checkoutUrl
   }
 }
+
+export function goToCheckoutDirect(variantGid: string, quantity = 1) {
+  const variantId = parseGid(variantGid)
+  const buyDirect = window.shiprocketCheckoutEvents?.buyDirect
+  if (typeof buyDirect === "function") {
+    buyDirect({ type: "cart", products: [{ variantId, quantity }] })
+    return
+  }
+  window.location.href = `/cart/${variantId}:${quantity}`
+}
