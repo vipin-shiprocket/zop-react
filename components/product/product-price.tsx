@@ -16,11 +16,9 @@ export function ProductPrice({ price, compareAtPrice }: ProductPriceProps) {
               {formatPrice(price)}
             </span>
           )}
-          <s>
-            <span className="text-[18px] font-normal leading-[1.3] text-[#8F8F8F] md:text-[32px] md:leading-[1.4]">
-              {formatPrice(compareAtPrice)}
-            </span>
-          </s>
+          <span className="text-[18px] font-normal leading-[1.3] text-[#8F8F8F] line-through md:text-[32px] md:leading-[1.4]">
+            {formatPrice(compareAtPrice)}
+          </span>
         </>
       ) : price ? (
         <span className="text-[24px] font-bold leading-[1.3] text-[#1C1C15] md:text-[40px] md:leading-[1.4]">

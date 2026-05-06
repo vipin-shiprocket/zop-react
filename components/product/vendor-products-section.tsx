@@ -25,7 +25,7 @@ export const VendorProductsSection = memo(function VendorProductsSection({
   if (filtered.length === 0) return null
 
   return (
-    <section className="!px-4 py-6 md:!px-0 bg-[#f8f8f8] mt-6">
+    <section className="!px-4 py-6 md:!px-[70px] bg-[#f8f8f8] mt-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 className="!text-[20px] md:!text-[29px] font-semibold">
           More from {vendorName}

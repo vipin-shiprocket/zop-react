@@ -99,7 +99,7 @@ export const CollectionProductsSection = memo(
     if (products.length === 0) return null
 
     return (
-      <section className="!px-4 py-6 md:!px-0">
+      <section className="!px-4 py-6 md:!px-[70px]">
         <div className="mb-0 flex items-center justify-between py-[2.4rem] md:py-[2.4rem]">
           <h2 className="m-0 !text-[20px] md:!text-[29px] font-semibold leading-[1] text-[#1C1C15] md:font-bold md:leading-[1.2]">
             {collectionTitle}

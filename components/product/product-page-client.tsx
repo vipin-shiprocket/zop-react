@@ -31,6 +31,7 @@ import { ProductInfoTabs } from "./product-info-tabs"
 import { VendorProductsSection } from "./vendor-products-section"
 import { CollectionProductsSection } from "./collection-products-section"
 import { StickyMobileBar } from "./sticky-mobile-bar"
+import { Container } from "@/components/layout/container"
 import { TrendingUpIcon } from "@/components/icons/trending-up-icon"
 import { FireIcon } from "@/components/icons/fire-icon"
 
@@ -58,19 +59,20 @@ export function ProductPageClient({
   const searchParams = useSearchParams()
   const [writeReviewOpen, setWriteReviewOpen] = useState(false)
 
-  const selectedOptions = useMemo(
-    () =>
-      readSelectedOptionsFromParams(
-        new URLSearchParams(searchParams?.toString() ?? ""),
-        product,
-      ),
-    [searchParams, product],
-  )
-
-  const selectedVariant = useMemo(
-    () => findSelectedVariant(product, selectedOptions),
-    [product, selectedOptions],
-  )
+  const { selectedOptions, selectedVariant } = useMemo(() => {
+    const fromParams = readSelectedOptionsFromParams(
+      new URLSearchParams(searchParams?.toString() ?? ""),
+      product,
+    )
+    const variant = findSelectedVariant(product, fromParams)
+    const merged = { ...fromParams }
+    if (variant) {
+      for (const so of variant.selectedOptions) {
+        if (!merged[so.name]) merged[so.name] = so.value
+      }
+    }
+    return { selectedOptions: merged, selectedVariant: variant }
+  }, [searchParams, product])
 
   const validCompareAtPrice: Money | null =
     selectedVariant?.compareAtPrice &&
@@ -92,7 +94,7 @@ export function ProductPageClient({
 
   return (
     <div className="w-full pb-8">
-      <div className="flex flex-col md:grid md:grid-cols-2 md:gap-12 md:items-start">
+      <Container className="flex flex-col md:grid md:grid-cols-2 md:gap-12 md:items-start">
         <div className="md:sticky md:top-0 md:self-start">
           <ProductGallery
             media={product.media.nodes}
@@ -173,7 +175,7 @@ export function ProductPageClient({
             </Suspense>
           </div>
         </div>
-      </div>
+      </Container>
 
       <Suspense fallback={null}>
         <VendorSectionAsync
