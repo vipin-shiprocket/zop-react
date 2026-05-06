@@ -11,7 +11,6 @@ import {
   useSyncExternalStore,
 } from "react"
 import useEmblaCarousel from "embla-carousel-react"
-import type { EmblaCarouselType } from "embla-carousel"
 import Image from "next/image"
 import { Play } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -21,6 +20,7 @@ import { GalleryDiscountBadge } from "./gallery-discount-badge"
 import { ShareIcon } from "@/components/icons/share-icon"
 import { ShareProductDialog } from "./share-product-dialog"
 import type { LightboxImage } from "@/components/ui/image-lightbox"
+import { DotIndicators } from "@/components/ui/dot-indicators"
 
 const ImageLightbox = lazy(() =>
   import("@/components/ui/image-lightbox").then((m) => ({
@@ -196,7 +196,8 @@ export const ProductGallery = memo(function ProductGallery({
             <DotIndicators
               count={media.length}
               selectedIndex={selectedIndex}
-              mainApi={mainApi}
+              emblaApi={mainApi}
+              className="mt-3 md:hidden"
             />
           )}
         </div>
@@ -275,47 +276,5 @@ function ThumbButton({
         </div>
       )}
     </button>
-  )
-}
-
-function DotIndicators({
-  count,
-  selectedIndex,
-  mainApi,
-}: {
-  count: number
-  selectedIndex: number
-  mainApi: EmblaCarouselType | undefined
-}) {
-  return (
-    <div
-      className="mt-3 flex items-center justify-center gap-1 md:hidden"
-      role="tablist"
-    >
-      {Array.from({ length: count }).map((_, index) => {
-        const distance = Math.abs(index - selectedIndex)
-        const isActive = distance === 0
-        const isAdjacent = distance === 1
-
-        return (
-          <button
-            key={index}
-            type="button"
-            role="tab"
-            aria-selected={isActive}
-            aria-label={`Go to image ${index + 1}`}
-            onClick={() => mainApi?.scrollTo(index)}
-            className={cn(
-              "rounded-full transition-all duration-300",
-              isActive
-                ? "h-2.5 w-5 bg-foreground"
-                : isAdjacent
-                  ? "h-2.5 w-2.5 border border-foreground bg-transparent"
-                  : "h-2 w-2 border border-foreground/60 bg-transparent",
-            )}
-          />
-        )
-      })}
-    </div>
   )
 }
