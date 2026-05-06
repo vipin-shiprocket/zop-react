@@ -23,6 +23,30 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Zop",
   description: "Zop Store",
+  icons: {
+    icon: [
+      {
+        url: "https://cdn.shopify.com/s/files/1/0643/7119/6054/files/darkModeFavicon_8c1ce738-33d7-4353-a840-68e26145b8c1.png?width=100",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "https://www.zop.in/cdn/shop/t/95/assets/liteModeFavicon.png?width=100",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+    apple: [
+      {
+        url: "https://cdn.shopify.com/s/files/1/0643/7119/6054/files/darkModeFavicon_8c1ce738-33d7-4353-a840-68e26145b8c1.png?width=100",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "https://www.zop.in/cdn/shop/t/95/assets/liteModeFavicon.png?width=100",
+        media: "(prefers-color-scheme: dark)",
+      },
+    ],
+  },
 }
 
 const PUBLIC_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN ?? ""
