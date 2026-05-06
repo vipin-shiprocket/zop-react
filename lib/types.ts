@@ -3,6 +3,39 @@ export type Money = {
   currencyCode: string
 }
 
+export type MenuItem = {
+  id: string
+  resourceId: string | null
+  tags: string[]
+  title: string
+  type: string
+  url: string | null
+  items?: MenuItem[]
+}
+
+export type Menu = {
+  id: string
+  items: MenuItem[]
+}
+
+export type ShopInfo = {
+  id: string
+  name: string
+  description: string | null
+  primaryDomain: { url: string }
+  brand: { logo: { image: { url: string } } | null } | null
+}
+
+export type HeaderQuery = {
+  shop: ShopInfo | null
+  menu: Menu | null
+}
+
+export type FooterQuery = {
+  contactMenu: Menu | null
+  helpMenu: Menu | null
+}
+
 export type ProductMedia = {
   type: 'IMAGE'
   url: string

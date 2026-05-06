@@ -1,6 +1,14 @@
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
+
 import "./globals.css"
+import "./searchtap.css"
+
+import { Footer } from "@/components/layout/footer"
+import { Header } from "@/components/layout/header"
+import { FOOTER_QUERY, HEADER_QUERY } from "@/lib/queries"
+import { shopifyClient } from "@/lib/shopify"
+import type { FooterQuery, HeaderQuery } from "@/lib/types"
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -13,14 +21,62 @@ export const metadata: Metadata = {
   description: "Zop Store",
 }
 
-export default function RootLayout({
+const PUBLIC_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN ?? ""
+
+async function fetchHeader(): Promise<HeaderQuery | null> {
+  try {
+    const { data, errors } = await shopifyClient.request(HEADER_QUERY, {
+      variables: { headerMenuHandle: "main-menu" },
+    })
+    if (errors) {
+      console.error("HEADER_QUERY errors", errors)
+      return null
+    }
+    return (data as HeaderQuery) ?? null
+  } catch (err) {
+    console.error("HEADER_QUERY failed", err)
+    return null
+  }
+}
+
+async function fetchFooter(): Promise<FooterQuery | null> {
+  try {
+    const { data, errors } = await shopifyClient.request(FOOTER_QUERY, {
+      variables: {
+        footerContactMenuHandle: "footer-contact",
+        footerHelpMenuHandle: "footer-help",
+      },
+    })
+    if (errors) {
+      console.error("FOOTER_QUERY errors", errors)
+      return null
+    }
+    return (data as FooterQuery) ?? null
+  } catch (err) {
+    console.error("FOOTER_QUERY failed", err)
+    return null
+  }
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const [header, footer] = await Promise.all([fetchHeader(), fetchFooter()])
+  const primaryDomainUrl = header?.shop?.primaryDomain?.url ?? ""
+
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Header header={header} publicStoreDomain={PUBLIC_STORE_DOMAIN} />
+        {children}
+        <Footer
+          footer={footer}
+          primaryDomainUrl={primaryDomainUrl}
+          publicStoreDomain={PUBLIC_STORE_DOMAIN}
+        />
+      </body>
     </html>
   )
 }
