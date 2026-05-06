@@ -1,5 +1,6 @@
 "use client"
 
+import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
@@ -8,6 +9,9 @@ import {
   type SelectedOptions,
 } from "@/lib/product-variants"
 import type { OptionSwatch, Product, ProductVariant } from "@/lib/types"
+import { addCartLines } from "@/app/cart/actions"
+import { useCartStore } from "@/lib/cart"
+import { goToCheckout } from "@/lib/checkout"
 
 interface ProductFormProps {
   product: Product
@@ -103,8 +107,25 @@ export function ProductForm({
   selectedVariant,
 }: ProductFormProps) {
   const router = useRouter()
+  const setCart = useCartStore((s) => s.setCart)
+  const openCart = useCartStore((s) => s.open)
+  const [isPending, startTransition] = useTransition()
 
   const isAvailable = !!selectedVariant?.availableForSale
+  const canSubmit = isAvailable && !isPending && !!selectedVariant
+
+  const addToCart = (then: "open-drawer" | "checkout") => {
+    if (!selectedVariant) return
+    startTransition(async () => {
+      const result = await addCartLines([
+        { merchandiseId: selectedVariant.id, quantity: 1 },
+      ])
+      if (!result.cart) return
+      setCart(result.cart)
+      if (then === "open-drawer") openCart()
+      else goToCheckout(result.cart)
+    })
+  }
 
   return (
     <div className="space-y-6">
@@ -168,23 +189,23 @@ export function ProductForm({
       <div className="flex flex-col gap-3 md:flex-row">
         <button
           type="button"
-          disabled={!isAvailable}
-          onClick={() => {}}
+          disabled={!canSubmit}
+          onClick={() => addToCart("open-drawer")}
           className={cn(
             "h-12 w-full cursor-pointer rounded-lg border-2 border-[#1C1C15] bg-white font-semibold text-[#1C1C15] transition-opacity",
-            !isAvailable && "cursor-not-allowed opacity-50",
+            !canSubmit && "cursor-not-allowed opacity-50",
           )}
         >
-          {isAvailable ? "Add to Bag" : "Sold out"}
+          {!isAvailable ? "Sold out" : isPending ? "Adding…" : "Add to Bag"}
         </button>
 
         <button
           type="button"
-          disabled={!isAvailable}
-          onClick={() => {}}
+          disabled={!canSubmit}
+          onClick={() => addToCart("checkout")}
           className={cn(
             "h-12 w-full cursor-pointer rounded-lg border-2 border-[#1C1C15] bg-[#1C1C15] font-semibold text-white transition-opacity",
-            !isAvailable && "cursor-not-allowed opacity-50",
+            !canSubmit && "cursor-not-allowed opacity-50",
           )}
         >
           Buy Now

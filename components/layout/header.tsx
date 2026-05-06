@@ -7,10 +7,12 @@ import { Loader2, ShoppingBag, User, X } from "lucide-react"
 
 import { FALLBACK_HEADER_MENU, resolveMenuUrl } from "@/lib/menu"
 import type { HeaderQuery } from "@/lib/types"
+import { useCartStore } from "@/lib/cart"
 
 interface HeaderProps {
   header: HeaderQuery | null
   publicStoreDomain: string
+  initialCartCount?: number
 }
 
 function useScrolled(threshold = 10) {
@@ -63,10 +65,18 @@ function SearchIcon({
   )
 }
 
-export function Header({ header, publicStoreDomain }: HeaderProps) {
+export function Header({
+  header,
+  publicStoreDomain,
+  initialCartCount = 0,
+}: HeaderProps) {
   const scrolled = useScrolled()
   const [searchReady, setSearchReady] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const openCart = useCartStore((s) => s.open)
+  const cartCount = useCartStore(
+    (s) => s.cart?.totalQuantity ?? initialCartCount,
+  )
 
   const menu = header?.menu ?? FALLBACK_HEADER_MENU
   const primaryDomainUrl = header?.shop?.primaryDomain?.url ?? ""
@@ -286,11 +296,12 @@ export function Header({ header, publicStoreDomain }: HeaderProps) {
           )}
         </span>
 
-        {/* Cart icon — static link, no count badge per scope */}
-        <Link
-          href="/cart"
+        {/* Cart icon — opens the cart drawer */}
+        <button
+          type="button"
+          onClick={openCart}
           aria-label="Cart"
-          className={`relative flex items-center justify-center shrink-0 transition-colors duration-300
+          className={`relative flex items-center justify-center shrink-0 transition-colors duration-300 cursor-pointer
             w-9 h-9 rounded-[10px] border border-[#d2d2d2] bg-white shadow-[0px_0px_8px_0px_rgba(0,0,0,0.12)]
             lg:w-11 lg:h-11 lg:bg-transparent lg:border-none lg:shadow-none lg:rounded-none`}
         >
@@ -300,7 +311,12 @@ export function Header({ header, publicStoreDomain }: HeaderProps) {
               scrolled ? "lg:text-black" : "lg:text-white"
             }`}
           />
-        </Link>
+          {cartCount > 0 && (
+            <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 rounded-full bg-black text-white text-[10px] font-semibold flex items-center justify-center leading-none">
+              {cartCount}
+            </span>
+          )}
+        </button>
 
         {/* Mobile menu trigger */}
         <DialogPrimitive.Root open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>

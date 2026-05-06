@@ -6,6 +6,9 @@ import "./searchtap.css"
 
 import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
+import { CartDrawer } from "@/components/cart/cart-drawer"
+import { CartInit } from "@/components/cart/cart-init"
+import { getCart } from "@/app/cart/actions"
 import { FOOTER_QUERY, HEADER_QUERY } from "@/lib/queries"
 import { shopifyClient } from "@/lib/shopify"
 import type { FooterQuery, HeaderQuery } from "@/lib/types"
@@ -63,19 +66,29 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [header, footer] = await Promise.all([fetchHeader(), fetchFooter()])
+  const [header, footer, cart] = await Promise.all([
+    fetchHeader(),
+    fetchFooter(),
+    getCart(),
+  ])
   const primaryDomainUrl = header?.shop?.primaryDomain?.url ?? ""
 
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Header header={header} publicStoreDomain={PUBLIC_STORE_DOMAIN} />
+        <Header
+          header={header}
+          publicStoreDomain={PUBLIC_STORE_DOMAIN}
+          initialCartCount={cart?.totalQuantity ?? 0}
+        />
         {children}
         <Footer
           footer={footer}
           primaryDomainUrl={primaryDomainUrl}
           publicStoreDomain={PUBLIC_STORE_DOMAIN}
         />
+        <CartInit cart={cart} />
+        <CartDrawer />
       </body>
     </html>
   )
