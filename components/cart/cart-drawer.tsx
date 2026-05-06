@@ -2,12 +2,14 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet"
 import { useCartStore } from "@/lib/cart"
 import { CartLineItem } from "./cart-line-item"
 import { CartFooter } from "./cart-footer"
 import { CartRecommendations } from "./cart-recommendations"
+import { CouponSection, type CelebrationData } from "./coupon-section"
+import { CouponCelebration } from "./coupon-celebration"
 
 const PROMOS = [
   "Get EXTRA 10% Off Using Shipcoins",
@@ -19,6 +21,7 @@ export function CartDrawer() {
   const isOpen = useCartStore((s) => s.isOpen)
   const close = useCartStore((s) => s.close)
   const cart = useCartStore((s) => s.cart)
+  const [celebration, setCelebration] = useState<CelebrationData | null>(null)
 
   const lines = cart?.lines.nodes ?? []
   const hasItems = lines.length > 0
@@ -35,7 +38,7 @@ export function CartDrawer() {
           Your shopping cart contents
         </SheetDescription>
 
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full relative">
           <DrawerHeader
             totalQuantity={cart?.totalQuantity ?? 0}
             onClose={close}
@@ -52,7 +55,9 @@ export function CartDrawer() {
                     ))}
                   </div>
                 </div>
-                <CouponStub />
+                {cart && (
+                  <CouponSection cart={cart} onCelebrate={setCelebration} />
+                )}
                 <CartRecommendations />
               </>
             ) : (
@@ -61,6 +66,14 @@ export function CartDrawer() {
           </div>
 
           {hasItems && cart && <CartFooter cart={cart} />}
+
+          {celebration && (
+            <CouponCelebration
+              code={celebration.code}
+              savedAmount={celebration.savedAmount}
+              onDone={() => setCelebration(null)}
+            />
+          )}
         </div>
       </SheetContent>
     </Sheet>
@@ -115,45 +128,6 @@ function PromoBanner() {
             {promo}
           </span>
         ))}
-      </div>
-    </div>
-  )
-}
-
-function CouponStub() {
-  return (
-    <div className="px-4 py-4 border-b border-gray-100">
-      <div className="flex items-center gap-2">
-        <input
-          type="text"
-          placeholder="Enter coupon code"
-          className="flex-1 h-10 px-3 text-sm border border-gray-300 rounded-lg outline-none focus:border-gray-400"
-          disabled
-        />
-        <button
-          type="button"
-          className="h-10 px-4 text-sm font-medium text-gray-400 border border-gray-300 rounded-lg cursor-not-allowed"
-          disabled
-        >
-          Apply
-        </button>
-      </div>
-      <div className="flex items-center justify-between mt-2.5">
-        <button
-          type="button"
-          className="text-xs text-blue-600 underline cursor-not-allowed"
-          disabled
-        >
-          Enter a coupon
-        </button>
-        <button
-          type="button"
-          className="flex items-center gap-0.5 text-xs text-gray-600 cursor-not-allowed"
-          disabled
-        >
-          +2 offer(s) available
-          <ChevronRight size={14} className="text-gray-400" />
-        </button>
       </div>
     </div>
   )
