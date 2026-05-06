@@ -53,8 +53,41 @@ export const FOOTER_QUERY = `
   ${MENU_FRAGMENT}
 `
 
+const PRODUCT_VARIANT_FRAGMENT = `
+  fragment ProductVariantFields on ProductVariant {
+    id
+    title
+    availableForSale
+    sku
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+    price {
+      amount
+      currencyCode
+    }
+    compareAtPrice {
+      amount
+      currencyCode
+    }
+    selectedOptions {
+      name
+      value
+    }
+  }
+`
+
 export const PRODUCT_BY_HANDLE_QUERY = `
   query ProductByHandle($handle: String!) {
+    shop {
+      offersList: metafield(namespace: "custom", key: "offers_list") {
+        value
+      }
+    }
     product(handle: $handle) {
       id
       handle
@@ -65,20 +98,19 @@ export const PRODUCT_BY_HANDLE_QUERY = `
       vendor
       tags
       availableForSale
+      seo {
+        title
+        description
+      }
       options {
         name
-        values
-      }
-      media(first: 20) {
-        edges {
-          node {
-            mediaContentType
-            ... on MediaImage {
-              image {
+        optionValues {
+          name
+          swatch {
+            color
+            image {
+              previewImage {
                 url
-                altText
-                width
-                height
               }
             }
           }
@@ -90,43 +122,107 @@ export const PRODUCT_BY_HANDLE_QUERY = `
         width
         height
       }
-      priceRange {
-        minVariantPrice {
-          amount
-          currencyCode
-        }
-        maxVariantPrice {
-          amount
-          currencyCode
-        }
-      }
-      compareAtPriceRange {
-        minVariantPrice {
-          amount
-          currencyCode
-        }
-      }
-      variants(first: 100) {
-        edges {
-          node {
+      media(first: 20) {
+        nodes {
+          __typename
+          ... on MediaImage {
             id
-            title
-            availableForSale
-            price {
-              amount
-              currencyCode
-            }
-            compareAtPrice {
-              amount
-              currencyCode
-            }
-            selectedOptions {
-              name
-              value
+            image {
+              id
+              url
+              altText
+              width
+              height
             }
           }
+          ... on Video {
+            id
+            sources {
+              url
+              mimeType
+            }
+          }
+          ... on ExternalVideo {
+            id
+            host
+            originUrl
+          }
+        }
+      }
+      priceRange {
+        minVariantPrice { amount currencyCode }
+        maxVariantPrice { amount currencyCode }
+      }
+      compareAtPriceRange {
+        minVariantPrice { amount currencyCode }
+      }
+      variants(first: 100) {
+        nodes {
+          ...ProductVariantFields
+        }
+      }
+      metafields(identifiers: [
+        {namespace: "custom", key: "manufactured_by_address"}
+        {namespace: "custom", key: "sold_by_address"}
+      ]) {
+        key
+        value
+      }
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
+`
+
+export const PRODUCT_CARD_FRAGMENT = `
+  fragment ProductCardFields on Product {
+    id
+    title
+    handle
+    vendor
+    featuredImage {
+      url
+      altText
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice { amount currencyCode }
+    }
+    compareAtPriceRange {
+      minVariantPrice { amount currencyCode }
+    }
+    variants(first: 2) {
+      nodes {
+        id
+      }
+    }
+  }
+`
+
+export const VENDOR_PRODUCTS_QUERY = `
+  query VendorProducts($vendorQuery: String!) {
+    products(first: 8, query: $vendorQuery) {
+      nodes {
+        ...ProductCardFields
+      }
+    }
+  }
+  ${PRODUCT_CARD_FRAGMENT}
+`
+
+export const COLLECTION_PRODUCTS_QUERY = `
+  query CollectionProducts($handle: String!, $cursor: String) {
+    collection(handle: $handle) {
+      products(first: 20, after: $cursor) {
+        nodes {
+          ...ProductCardFields
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
         }
       }
     }
   }
+  ${PRODUCT_CARD_FRAGMENT}
 `
