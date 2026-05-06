@@ -59,7 +59,7 @@ export function ProductDetailsHeader({
         </a>
       )}
 
-      <div className="flex items-start justify-between gap-3 mb-3">
+      <div className="flex items-center justify-between gap-3">
         <h1 className="!text-[16px] md:!text-[28px] !font-semibold !leading-[1.3] !tracking-[0] text-[#1C1C15] !my-0">
           {title}
         </h1>

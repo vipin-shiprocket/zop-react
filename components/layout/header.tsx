@@ -313,7 +313,7 @@ export function Header({
             }`}
           />
           {cartCount > 0 && (
-            <span className="absolute -top-2 -right-2 md:top-0 md:right-0 h-6 md:h-4 min-w-6 md:min-w-4 rounded-full bg-red-600 text-white text-sm font-semibold flex items-center justify-center leading-none">
+            <span className="absolute -top-2 -right-2 md:top-0 md:right-0 h-6 md:h-4 min-w-6 md:min-w-4 rounded-full bg-red-600 text-white text-sm md:text-[11px] font-semibold flex items-center justify-center leading-none">
               {cartCount}
             </span>
           )}

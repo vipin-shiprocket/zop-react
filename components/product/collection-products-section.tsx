@@ -140,11 +140,11 @@ export const CollectionProductsSection = memo(
         </div>
 
         {/* Desktop: horizontal scroll of vertical cards */}
-        <div className="scrollbar-hide hidden md:flex md:flex-row md:snap-x md:snap-mandatory md:gap-4 md:overflow-x-auto">
+        <div className="scrollbar-hide hidden pb-8 md:flex md:flex-row md:snap-x md:snap-mandatory md:gap-4 md:overflow-x-auto">
           {products.map((product, index) => (
             <div
               key={product.id}
-              className="w-[220px] flex-shrink-0 snap-start"
+              className="w-[220px] flex-shrink-0 snap-start md:min-w-[280px]"
             >
               <ProductCard
                 product={product}

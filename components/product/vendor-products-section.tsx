@@ -41,7 +41,7 @@ export const VendorProductsSection = memo(function VendorProductsSection({
         </Link>
       </div>
 
-      <div className="scrollbar-hide -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 md:mx-0 md:px-0">
+      <div className="scrollbar-hide -mx-4 flex pb-8 snap-x snap-mandatory gap-4 overflow-x-auto px-4 md:mx-0 md:px-0">
         {filtered.map((product, index) => (
           <div
             key={product.id}
