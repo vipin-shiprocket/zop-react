@@ -2,7 +2,7 @@
 
 import { memo, useMemo } from "react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { RightArrowIcon } from "@/components/icons/right-arrow-icon"
 import { ProductCard } from "./product-card"
 import type { ProductCardProduct } from "@/lib/types"
 
@@ -37,7 +37,7 @@ export const VendorProductsSection = memo(function VendorProductsSection({
           aria-label="View all products"
           title="View all products"
         >
-          <ArrowRight className="w-[29px] h-[15px] md:w-[40px] md:h-[40px]" />
+          <RightArrowIcon />
         </Link>
       </div>
 

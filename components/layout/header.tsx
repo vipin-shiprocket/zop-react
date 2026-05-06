@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Dialog as DialogPrimitive } from "radix-ui"
-import { Loader2, ShoppingBag, User, X } from "lucide-react"
+import { Loader2, User, X } from "lucide-react"
 
 import { FALLBACK_HEADER_MENU, resolveMenuUrl } from "@/lib/menu"
 import type { HeaderQuery } from "@/lib/types"
 import { useCartStore } from "@/lib/cart"
+import { AccountIcon } from "@/components/icons/account-icon"
+import { CartIcon } from "@/components/icons/cart-icon"
 
 interface HeaderProps {
   header: HeaderQuery | null
@@ -305,14 +307,13 @@ export function Header({
             w-9 h-9 rounded-[10px] border border-[#d2d2d2] bg-white shadow-[0px_0px_8px_0px_rgba(0,0,0,0.12)]
             lg:w-11 lg:h-11 lg:bg-transparent lg:border-none lg:shadow-none lg:rounded-none`}
         >
-          <ShoppingBag
-            size={20}
-            className={`text-[#7f7f7f] lg:w-6 lg:h-6 ${
+          <CartIcon
+            className={`w-5 h-5 text-[#7f7f7f] lg:w-6 lg:h-6 ${
               scrolled ? "lg:text-black" : "lg:text-white"
             }`}
           />
           {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 rounded-full bg-black text-white text-[10px] font-semibold flex items-center justify-center leading-none">
+            <span className="absolute top-0 right-0 h-4 min-w-4 px-1 rounded-full bg-red-600 text-white text-[10px] font-semibold flex items-center justify-center leading-none">
               {cartCount}
             </span>
           )}
@@ -394,9 +395,9 @@ export function Header({
           aria-label="Account"
           className="hidden lg:flex items-center justify-center w-11 h-11 shrink-0"
         >
-          <User
-            size={24}
-            className={scrolled ? "text-black" : "text-white"}
+          <AccountIcon
+            stroke={scrolled ? "black" : "white"}
+            className="w-6 h-6"
           />
         </a>
       </div>
