@@ -35,7 +35,8 @@ export const CollectionProductsSection = memo(
   }: CollectionProductsSectionProps) {
     const [products, setProducts] = useState(initialProducts)
     const [pageInfo, setPageInfo] = useState(initialPageInfo)
-    const sentinelRef = useRef<HTMLDivElement>(null)
+    const mobileSentinelRef = useRef<HTMLDivElement>(null)
+    const desktopSentinelRef = useRef<HTMLDivElement>(null)
     const isFetchingRef = useRef(false)
     const [isPending, startTransition] = useTransition()
 
@@ -83,17 +84,15 @@ export const CollectionProductsSection = memo(
     })
 
     useEffect(() => {
-      const sentinel = sentinelRef.current
-      if (!sentinel) return
-
       const observer = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting) loadMoreRef.current()
+          if (entries.some((e) => e.isIntersecting)) loadMoreRef.current()
         },
         { rootMargin: "300px" },
       )
 
-      observer.observe(sentinel)
+      if (mobileSentinelRef.current) observer.observe(mobileSentinelRef.current)
+      if (desktopSentinelRef.current) observer.observe(desktopSentinelRef.current)
       return () => observer.disconnect()
     }, [])
 
@@ -116,11 +115,36 @@ export const CollectionProductsSection = memo(
           </Link>
         </div>
 
-        <div className="flex flex-col gap-4 md:scrollbar-hide md:-mx-0 md:flex-row md:snap-x md:snap-mandatory md:gap-4 md:overflow-x-auto md:px-0">
+        {/* Mobile: vertical list of horizontal cards */}
+        <div className="flex flex-col gap-4 md:hidden">
+          {products.map((product, index) => (
+            <div key={product.id} className="w-full">
+              <ProductCard
+                product={product}
+                variant="horizontal"
+                loading={index < 4 ? "eager" : "lazy"}
+              />
+            </div>
+          ))}
+
+          {pageInfo.hasNextPage && (
+            <div
+              ref={mobileSentinelRef}
+              className="flex w-full items-center justify-center py-2"
+            >
+              {isPending && (
+                <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop: horizontal scroll of vertical cards */}
+        <div className="scrollbar-hide hidden md:flex md:flex-row md:snap-x md:snap-mandatory md:gap-4 md:overflow-x-auto">
           {products.map((product, index) => (
             <div
               key={product.id}
-              className="w-full flex-shrink-0 md:w-[220px] md:snap-start"
+              className="w-[220px] flex-shrink-0 snap-start"
             >
               <ProductCard
                 product={product}
@@ -132,8 +156,8 @@ export const CollectionProductsSection = memo(
 
           {pageInfo.hasNextPage && (
             <div
-              ref={sentinelRef}
-              className="flex flex-shrink-0 items-center justify-center w-full md:w-[100px]"
+              ref={desktopSentinelRef}
+              className="flex w-[100px] flex-shrink-0 items-center justify-center"
             >
               {isPending && (
                 <Loader2 className="h-6 w-6 animate-spin text-gray-400" />

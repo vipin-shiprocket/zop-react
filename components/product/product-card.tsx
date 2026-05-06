@@ -136,7 +136,7 @@ export function ProductCard({
           </p>
         )}
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mb-1">
           <span className="text-lg font-bold whitespace-nowrap md:text-xl">
             {formatPrice(price)}
           </span>
