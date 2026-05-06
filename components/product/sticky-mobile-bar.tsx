@@ -9,6 +9,7 @@ interface StickyMobileBarProps {
   compareAtPrice: Money | null
   discount?: number | null
   isLimitedDeal?: boolean
+  onAddToBag: () => void
 }
 
 export function StickyMobileBar({
@@ -16,6 +17,7 @@ export function StickyMobileBar({
   compareAtPrice,
   discount,
   isLimitedDeal,
+  onAddToBag,
 }: StickyMobileBarProps) {
   const isAvailable = !!selectedVariant?.availableForSale
 
@@ -65,7 +67,7 @@ export function StickyMobileBar({
       <button
         type="button"
         disabled={!isAvailable}
-        onClick={() => {}}
+        onClick={onAddToBag}
         className={cn(
           "inline-flex items-center justify-center bg-black w-[9rem] text-white rounded-lg h-12 px-4 text-sm font-medium whitespace-nowrap",
           !isAvailable && "cursor-not-allowed opacity-50",

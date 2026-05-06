@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, use, useMemo, useState } from "react"
+import { Suspense, use, useMemo, useState, useTransition } from "react"
 import { useSearchParams } from "next/navigation"
 import { calcDiscountPercentage, parseGid } from "@/lib/utils"
 import {
@@ -22,6 +22,8 @@ import { ProductDetailsHeader, MrpInfoIcon } from "./product-details-header"
 import { ProductPrice } from "./product-price"
 import { DiscountBadge } from "./discount-badge"
 import { ProductForm } from "./product-form"
+import { addCartLines } from "@/app/cart/actions"
+import { useCartStore } from "@/lib/cart"
 import { FeatureBadges } from "./feature-badges"
 import { PromotionalBadges } from "./promotional-badges"
 import { ReviewSummary } from "./review-summary"
@@ -58,6 +60,9 @@ export function ProductPageClient({
 }: ProductPageClientProps) {
   const searchParams = useSearchParams()
   const [writeReviewOpen, setWriteReviewOpen] = useState(false)
+  const setCart = useCartStore((s) => s.setCart)
+  const openCart = useCartStore((s) => s.open)
+  const [, startTransition] = useTransition()
 
   const { selectedOptions, selectedVariant } = useMemo(() => {
     const fromParams = readSelectedOptionsFromParams(
@@ -91,6 +96,18 @@ export function ProductPageClient({
 
   const isLimitedDeal = product.tags?.includes("free-shipping-deals") ?? false
   const numericProductId = parseGid(product.id)
+
+  const addToCart = () => {
+    if (!selectedVariant) return
+    startTransition(async () => {
+      const result = await addCartLines([
+        { merchandiseId: selectedVariant.id, quantity: 1 },
+      ])
+      if (!result.cart) return
+      setCart(result.cart)
+      openCart()
+    })
+  }
 
   return (
     <div className="w-full pb-8">
@@ -194,6 +211,7 @@ export function ProductPageClient({
         compareAtPrice={validCompareAtPrice}
         discount={discount}
         isLimitedDeal={isLimitedDeal}
+        onAddToBag={addToCart}
       />
     </div>
   )
