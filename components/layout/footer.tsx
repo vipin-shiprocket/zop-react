@@ -181,6 +181,44 @@ export function Footer({
 }
 
 function SubscribeForm() {
+  const [email, setEmail] = useState("")
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
+  const [errorMsg, setErrorMsg] = useState("")
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setStatus("loading")
+    setErrorMsg("")
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setStatus("success")
+      } else {
+        setStatus("error")
+        setErrorMsg(data.error ?? "Something went wrong. Please try again.")
+      }
+    } catch {
+      setStatus("error")
+      setErrorMsg("Something went wrong. Please try again.")
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div>
+        <p className="font-semibold text-sm text-white !mb-3">
+          Subscribe to our emails
+        </p>
+        <p className="text-sm text-green-400">Thanks for subscribing!</p>
+      </div>
+    )
+  }
+
   return (
     <div>
       <p className="font-semibold text-sm text-white !mb-3">
@@ -188,21 +226,29 @@ function SubscribeForm() {
       </p>
       <form
         className="flex items-center border border-white/30 rounded"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit}
       >
         <input
           type="email"
           placeholder="Email"
-          className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-white/60 outline-none"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={status === "loading"}
+          required
+          className="flex-1 bg-transparent px-4 py-3 text-sm text-white placeholder-white/60 outline-none disabled:opacity-50"
         />
         <button
           type="submit"
           aria-label="Subscribe"
-          className="px-3 text-white hover:text-white/80 transition-colors"
+          disabled={status === "loading"}
+          className="px-3 text-white hover:text-white/80 transition-colors disabled:opacity-50"
         >
           <ArrowRight size={18} />
         </button>
       </form>
+      {status === "error" && (
+        <p className="text-xs text-red-400 mt-2">{errorMsg}</p>
+      )}
     </div>
   )
 }

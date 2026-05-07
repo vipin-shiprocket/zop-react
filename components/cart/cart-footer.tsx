@@ -66,7 +66,7 @@ export function CartFooter({ cart }: { cart: Cart }) {
         </div>
       </div>
 
-      <div className="flex items-center h-[70px] p-[10px] gap-[10px]">
+      <div className="flex items-center h-[70px] p-[10px] gap-4">
         <button
           type="button"
           onClick={() => setExpanded((e) => !e)}
