@@ -8,7 +8,6 @@ import {
   useCallback,
   useTransition,
 } from "react"
-import Link from "next/link"
 import { Loader2 } from "lucide-react"
 import { RightArrowIcon } from "@/components/icons/right-arrow-icon"
 import { ProductCard } from "./product-card"
@@ -104,15 +103,14 @@ export const CollectionProductsSection = memo(
           <h2 className="m-0 !text-[20px] md:!text-[29px] font-semibold leading-[1] text-[#1C1C15] md:font-bold md:leading-[1.2]">
             {collectionTitle}
           </h2>
-          <Link
-            href={`/collections/${collectionHandle}`}
-            prefetch={false}
+          <a
+            href={`https://www.zop.in/collections/${collectionHandle}`}
             className="mr-4 block transition-transform duration-300 hover:translate-x-[5px] md:mr-0"
             aria-label={`View all ${collectionTitle}`}
             title={`View all ${collectionTitle}`}
           >
             <RightArrowIcon />
-          </Link>
+          </a>
         </div>
 
         {/* Mobile: vertical list of horizontal cards */}

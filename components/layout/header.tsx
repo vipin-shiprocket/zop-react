@@ -180,8 +180,8 @@ export function Header({
       }`}
     >
       <div className="relative flex items-center gap-2 px-4 py-2.5 lg:px-10 lg:py-3">
-        <Link
-          href="/"
+        <a
+          href="https://www.zop.in"
           aria-label="Home"
           className="relative z-[1] shrink-0"
         >
@@ -191,7 +191,7 @@ export function Header({
             alt="ZOP"
             className="rounded-full w-10 h-10 lg:w-12 lg:h-12"
           />
-        </Link>
+        </a>
 
         {/* Mobile search trigger — overlaps the logo via negative margin */}
         <button
@@ -345,14 +345,13 @@ export function Header({
                 </DialogPrimitive.Close>
               </div>
               <nav className="flex flex-col p-4 gap-1 overflow-y-auto">
-                <Link
-                  href="/"
-                  prefetch={false}
+                <a
+                  href="https://www.zop.in"
                   onClick={() => setMobileMenuOpen(false)}
                   className="py-2 text-sm font-medium hover:underline"
                 >
                   Home
-                </Link>
+                </a>
                 {menu.items.map((item) => {
                   if (!item.url) return null
                   const url = resolveMenuUrl(

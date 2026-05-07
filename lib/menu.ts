@@ -38,8 +38,8 @@ export const FALLBACK_HEADER_MENU: Menu = {
 export const FALLBACK_CONTACT_MENU: Menu = {
   id: "fallback-contact",
   items: [
-    { id: "c-support", resourceId: null, tags: [], title: "Customer Support", type: "HTTP", url: "/pages/contact", items: [] },
-    { id: "c-refund", resourceId: null, tags: [], title: "Return/Refund Request", type: "HTTP", url: "/policies/refund-policy", items: [] },
+    { id: "c-support", resourceId: null, tags: [], title: "Customer Support", type: "HTTP", url: "https://www.zop.in/pages/contact", items: [] },
+    { id: "c-refund", resourceId: null, tags: [], title: "Return/Refund Request", type: "HTTP", url: "https://www.zop.in/pages/returns", items: [] },
   ],
 }
 
@@ -50,6 +50,6 @@ export const FALLBACK_HELP_MENU: Menu = {
     { id: "h-terms", resourceId: null, tags: [], title: "Terms & Conditions", type: "HTTP", url: "/policies/terms-of-service", items: [] },
     { id: "h-shipping", resourceId: null, tags: [], title: "Shipping & Returns", type: "HTTP", url: "/policies/shipping-policy", items: [] },
     { id: "h-privacy", resourceId: null, tags: [], title: "Privacy Policy", type: "HTTP", url: "/policies/privacy-policy", items: [] },
-    { id: "h-onboard", resourceId: null, tags: [], title: "Get onboarded on ZOP", type: "HTTP", url: "/pages/onboarding", items: [] },
+    { id: "h-onboard", resourceId: null, tags: [], title: "Get onboarded on ZOP", type: "HTTP", url: "/pages/onboarded-on-zop", items: [] },
   ],
 }

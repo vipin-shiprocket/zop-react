@@ -1,7 +1,6 @@
 "use client"
 
 import { memo, useMemo } from "react"
-import Link from "next/link"
 import { RightArrowIcon } from "@/components/icons/right-arrow-icon"
 import { ProductCard } from "./product-card"
 import type { ProductCardProduct } from "@/lib/types"
@@ -30,15 +29,14 @@ export const VendorProductsSection = memo(function VendorProductsSection({
         <h2 className="!text-[20px] md:!text-[29px] font-semibold">
           More from {vendorName}
         </h2>
-        <Link
-          href={`/collections/vendors?q=${encodeURIComponent(vendorName)}`}
-          prefetch={false}
+        <a
+          href={`https://www.zop.in/collections/${encodeURIComponent(vendorName)}`}
           className="mr-4 block transition-transform duration-300 hover:translate-x-[5px] md:mr-0"
           aria-label="View all products"
           title="View all products"
         >
           <RightArrowIcon />
-        </Link>
+        </a>
       </div>
 
       <div className="scrollbar-hide -mx-4 flex pb-8 snap-x snap-mandatory gap-4 overflow-x-auto px-4 md:mx-0 md:px-0">

@@ -41,10 +41,11 @@ export function Footer({
   const contactMenu = footer?.contactMenu ?? FALLBACK_CONTACT_MENU
   const helpMenu = footer?.helpMenu ?? FALLBACK_HELP_MENU
 
-  const renderLinks = (menu: Menu) =>
+  const renderLinks = (menu: Menu, baseUrl?: string) =>
     menu.items.map((item) => {
       if (!item.url) return null
-      const url = resolveMenuUrl(item.url, publicStoreDomain, primaryDomainUrl)
+      let url = resolveMenuUrl(item.url, publicStoreDomain, primaryDomainUrl);
+      if (baseUrl && url.startsWith("/")) url = `${baseUrl}${url}`
       const isExternal = !url.startsWith("/")
       const linkClass =
         "block !text-white hover:opacity-80 text-sm py-1 transition-opacity"
@@ -80,7 +81,7 @@ export function Footer({
 
           <div>
             <p className="font-semibold text-sm text-white mb-3">Need Help?</p>
-            <div>{renderLinks(helpMenu)}</div>
+            <div>{renderLinks(helpMenu, "https://www.zop.in")}</div>
           </div>
 
           <SubscribeForm />
@@ -112,7 +113,7 @@ export function Footer({
                 Need Help?
               </AccordionTrigger>
               <AccordionContent className="text-white">
-                <div className="flex flex-col gap-1">{renderLinks(helpMenu)}</div>
+                <div className="flex flex-col gap-1">{renderLinks(helpMenu, "https://www.zop.in")}</div>
               </AccordionContent>
             </AccordionItem>
           </Accordion>

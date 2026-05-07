@@ -52,7 +52,7 @@ export function ProductDetailsHeader({
 
       {vendor && (
         <a
-          href={`/collections/${handleize(vendor)}`}
+          href={`https://www.zop.in/collections/${handleize(vendor)}`}
           className="hidden md:inline-block w-fit text-[18px] font-semibold leading-[1.4] uppercase !text-[#997807] underline underline-offset-2 hover:opacity-80"
         >
           {vendor}
@@ -81,7 +81,7 @@ export function ProductDetailsHeader({
 
       {vendor && (
         <a
-          href={`/collections/${handleize(vendor)}`}
+          href={`https://www.zop.in/collections/${handleize(vendor)}`}
           className="md:hidden flex items-center gap-1 no-underline text-[14px] font-normal leading-[1] text-[#50504C] border-b border-dashed border-[#50504C] w-fit hover:opacity-70"
         >
           {vendor}
