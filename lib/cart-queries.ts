@@ -1,6 +1,6 @@
 import { PRODUCT_CARD_FRAGMENT } from "./queries"
 
-const CART_FIELDS_FRAGMENT = `
+export const CART_FIELDS_FRAGMENT = `
   fragment CartFields on Cart {
     id
     checkoutUrl
@@ -10,6 +10,7 @@ const CART_FIELDS_FRAGMENT = `
       nodes {
         id
         quantity
+        attributes { key value }
         cost {
           totalAmount { amount currencyCode }
           amountPerQuantity { amount currencyCode }
@@ -18,6 +19,7 @@ const CART_FIELDS_FRAGMENT = `
         merchandise {
           ... on ProductVariant {
             id
+            sku
             availableForSale
             title
             image { id url altText width height }
