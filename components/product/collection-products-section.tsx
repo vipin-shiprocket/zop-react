@@ -38,6 +38,24 @@ export const CollectionProductsSection = memo(
     const desktopSentinelRef = useRef<HTMLDivElement>(null)
     const isFetchingRef = useRef(false)
     const [isPending, startTransition] = useTransition()
+    const placeholderRef = useRef<HTMLDivElement>(null)
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+      const el = placeholderRef.current
+      if (!el) return
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            observer.disconnect()
+          }
+        },
+        { rootMargin: "200px" },
+      )
+      observer.observe(el)
+      return () => observer.disconnect()
+    }, [])
 
     const loadMore = useCallback(() => {
       if (
@@ -83,6 +101,7 @@ export const CollectionProductsSection = memo(
     })
 
     useEffect(() => {
+      if (!isVisible) return
       const observer = new IntersectionObserver(
         (entries) => {
           if (entries.some((e) => e.isIntersecting)) loadMoreRef.current()
@@ -93,9 +112,13 @@ export const CollectionProductsSection = memo(
       if (mobileSentinelRef.current) observer.observe(mobileSentinelRef.current)
       if (desktopSentinelRef.current) observer.observe(desktopSentinelRef.current)
       return () => observer.disconnect()
-    }, [])
+    }, [isVisible])
 
     if (products.length === 0) return null
+
+    if (!isVisible) {
+      return <div ref={placeholderRef} className="min-h-[300px]" />
+    }
 
     return (
       <section className="!px-4 py-6 md:!px-[70px]">

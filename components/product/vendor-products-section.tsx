@@ -1,6 +1,6 @@
 "use client"
 
-import { memo, useMemo } from "react"
+import { memo, useMemo, useEffect, useRef, useState } from "react"
 import { RightArrowIcon } from "@/components/icons/right-arrow-icon"
 import { ProductCard } from "./product-card"
 import type { ProductCardProduct } from "@/lib/types"
@@ -21,7 +21,30 @@ export const VendorProductsSection = memo(function VendorProductsSection({
     [products, currentProductId],
   )
 
+  const placeholderRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const el = placeholderRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: "200px" },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   if (filtered.length === 0) return null
+
+  if (!isVisible) {
+    return <div ref={placeholderRef} className="mt-6 min-h-[200px]" />
+  }
 
   return (
     <section className="!px-4 py-6 md:!px-[70px] bg-[#f8f8f8] mt-6">
