@@ -129,7 +129,7 @@ export const PRODUCT_BY_HANDLE_QUERY = `
             id
             image {
               id
-              url
+              url(transform: { maxWidth: 800 })
               altText
               width
               height

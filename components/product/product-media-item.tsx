@@ -22,15 +22,8 @@ export function ProductMediaItem({
       image.width && image.height ? image.width / image.height : null
     return (
       <div
-        className={cn(
-          "relative aspect-[3/4] md:aspect-[var(--aspect-ratio)]",
-          className,
-        )}
-        style={
-          aspectRatio
-            ? ({ "--aspect-ratio": aspectRatio } as React.CSSProperties)
-            : undefined
-        }
+        className={cn("relative", className)}
+        style={{ aspectRatio: aspectRatio ?? "3/4" }}
       >
         <Image
           src={image.url}
@@ -39,7 +32,7 @@ export function ProductMediaItem({
           loading={isFirst ? "eager" : "lazy"}
           fetchPriority={isFirst ? "high" : "auto"}
           sizes="(min-width: 768px) 50vw, 100vw"
-          className="object-cover object-top rounded-bl-[12px] rounded-br-[12px]"
+          className="object-cover rounded-bl-[12px] rounded-br-[12px]"
         />
       </div>
     )
