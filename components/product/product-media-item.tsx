@@ -37,7 +37,7 @@ export function ProductMediaItem({
           alt={image.altText || "Product image"}
           fill
           loading={isFirst ? "eager" : "lazy"}
-          priority={isFirst}
+          fetchPriority={isFirst ? "high" : "auto"}
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover object-top rounded-bl-[12px] rounded-br-[12px]"
         />
