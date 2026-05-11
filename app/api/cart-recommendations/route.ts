@@ -2,6 +2,9 @@ import { shopifyClient } from "@/lib/shopify"
 import { CART_RECOMMENDATIONS_QUERY } from "@/lib/cart-queries"
 import type { CartRecommendationProduct } from "@/lib/cart"
 import type { ProductCardProduct } from "@/lib/types"
+import logger from "@/lib/logger"
+
+const log = logger.child({ module: "api/cart-recommendations" })
 
 export const revalidate = 300
 
@@ -18,12 +21,12 @@ async function fetchByQuery(
       { variables: { query } },
     )
     if (errors) {
-      console.error("CART_RECOMMENDATIONS errors", errors)
+      log.error({ errors }, "CART_RECOMMENDATIONS errors")
       return null
     }
     return (data as RecommendationsQueryData | undefined)?.products?.nodes ?? []
   } catch (err) {
-    console.error("CART_RECOMMENDATIONS failed", err)
+    log.error({ err }, "CART_RECOMMENDATIONS failed")
     return null
   }
 }

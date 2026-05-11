@@ -2,6 +2,9 @@ import { NextRequest } from "next/server"
 import { shopifyClient } from "@/lib/shopify"
 import { COLLECTION_PRODUCTS_QUERY } from "@/lib/queries"
 import type { CollectionProductsQuery } from "@/lib/types"
+import logger from "@/lib/logger"
+
+const log = logger.child({ module: "api/collection-products" })
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl
@@ -21,7 +24,7 @@ export async function GET(request: NextRequest) {
     )
 
     if (errors) {
-      console.error("COLLECTION_PRODUCTS_QUERY errors", errors)
+      log.error({ errors }, "COLLECTION_PRODUCTS_QUERY errors")
       return Response.json({ error: "graphql_error" }, { status: 502 })
     }
 
@@ -34,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     return Response.json({ products, pageInfo })
   } catch (err) {
-    console.error("COLLECTION_PRODUCTS_QUERY failed", err)
+    log.error({ err }, "COLLECTION_PRODUCTS_QUERY failed")
     return Response.json({ error: "request_failed" }, { status: 502 })
   }
 }

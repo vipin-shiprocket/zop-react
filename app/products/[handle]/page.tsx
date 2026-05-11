@@ -26,6 +26,9 @@ import type {
   ZopProductDetail,
 } from "@/lib/types"
 import { ProductPageClient } from "@/components/product/product-page-client"
+import logger from "@/lib/logger"
+
+const log = logger.child({ module: "products/[handle]" })
 
 const DEALS_COLLECTION_HANDLE = "lightning-deals"
 
@@ -41,7 +44,7 @@ async function _fetchProduct(handle: string): Promise<{
       { variables: { handle } },
     )
     if (errors) {
-      console.error("PRODUCT_BY_HANDLE_QUERY errors", errors)
+      log.error({ errors, handle }, "PRODUCT_BY_HANDLE_QUERY errors")
       return null
     }
     const typed = data as ProductByHandleQuery | undefined
@@ -59,7 +62,7 @@ async function _fetchProduct(handle: string): Promise<{
 
     return { product: typed.product, offersMap }
   } catch (err) {
-    console.error("PRODUCT_BY_HANDLE_QUERY failed", err)
+    log.error({ err, handle }, "PRODUCT_BY_HANDLE_QUERY failed")
     return null
   }
 }
@@ -73,13 +76,13 @@ function fetchVendorProducts(
     })
     .then(({ data, errors }) => {
       if (errors) {
-        console.error("VENDOR_PRODUCTS_QUERY errors", errors)
+        log.error({ errors, vendor }, "VENDOR_PRODUCTS_QUERY errors")
         return null
       }
       return (data as VendorProductsQuery) ?? null
     })
     .catch((err) => {
-      console.error("VENDOR_PRODUCTS_QUERY failed", err)
+      log.error({ err, vendor }, "VENDOR_PRODUCTS_QUERY failed")
       return null
     })
 }
@@ -91,13 +94,13 @@ function fetchCollectionProducts(): Promise<CollectionProductsQuery | null> {
     })
     .then(({ data, errors }) => {
       if (errors) {
-        console.error("COLLECTION_PRODUCTS_QUERY errors", errors)
+        log.error({ errors }, "COLLECTION_PRODUCTS_QUERY errors")
         return null
       }
       return (data as CollectionProductsQuery) ?? null
     })
     .catch((err) => {
-      console.error("COLLECTION_PRODUCTS_QUERY failed", err)
+      log.error({ err }, "COLLECTION_PRODUCTS_QUERY failed")
       return null
     })
 }

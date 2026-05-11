@@ -13,6 +13,9 @@ import { getCart } from "@/app/cart/actions"
 import { FOOTER_QUERY, HEADER_QUERY } from "@/lib/queries"
 import { shopifyClient } from "@/lib/shopify"
 import type { FooterQuery, HeaderQuery } from "@/lib/types"
+import logger from "@/lib/logger"
+
+const log = logger.child({ module: "layout" })
 
 const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
@@ -57,12 +60,12 @@ async function fetchHeader(): Promise<HeaderQuery | null> {
       variables: { headerMenuHandle: "main-menu" },
     })
     if (errors) {
-      console.error("HEADER_QUERY errors", errors)
+      log.error({ errors }, "HEADER_QUERY errors")
       return null
     }
     return (data as HeaderQuery) ?? null
   } catch (err) {
-    console.error("HEADER_QUERY failed", err)
+    log.error({ err }, "HEADER_QUERY failed")
     return null
   }
 }
@@ -76,12 +79,12 @@ async function fetchFooter(): Promise<FooterQuery | null> {
       },
     })
     if (errors) {
-      console.error("FOOTER_QUERY errors", errors)
+      log.error({ errors }, "FOOTER_QUERY errors")
       return null
     }
     return (data as FooterQuery) ?? null
   } catch (err) {
-    console.error("FOOTER_QUERY failed", err)
+    log.error({ err }, "FOOTER_QUERY failed")
     return null
   }
 }

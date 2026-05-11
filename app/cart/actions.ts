@@ -11,6 +11,9 @@ import {
   CART_QUERY,
 } from "@/lib/cart-queries"
 import type { Cart, CartActionResult, CartUserError } from "@/lib/cart"
+import logger from "@/lib/logger"
+
+const log = logger.child({ module: "cart/actions" })
 
 const CART_ID_KEY = "cart_id"
 const CART_COOKIE_MAX_AGE = 60 * 60 * 24 * 10 // 10 days — Shopify cart inactivity expiry
@@ -60,7 +63,7 @@ export async function getCart(): Promise<Cart | null> {
       variables: { cartId },
     })
     if (errors) {
-      console.error("CART_QUERY errors", errors)
+      log.error({ errors, cartId }, "CART_QUERY errors")
       return null
     }
     const cart = (data as { cart: Cart | null } | undefined)?.cart ?? null
@@ -70,7 +73,7 @@ export async function getCart(): Promise<Cart | null> {
     }
     return cart
   } catch (err) {
-    console.error("CART_QUERY failed", err)
+    log.error({ err, cartId }, "CART_QUERY failed")
     return null
   }
 }
@@ -87,7 +90,7 @@ export async function addCartLines(
       variables: { input: { lines } },
     })
     if (errors) {
-      console.error("CART_CREATE errors", errors)
+      log.error({ errors }, "CART_CREATE errors")
       return { cart: null, userErrors: [{ message: "Failed to create cart" }] }
     }
     const result = unwrap(
@@ -105,7 +108,10 @@ export async function addCartLines(
         variables: { cartId: concurrentId, lines },
       })
       if (merge.errors) {
-        console.error("CART_LINES_ADD merge errors", merge.errors)
+        log.error(
+          { errors: merge.errors, cartId: concurrentId },
+          "CART_LINES_ADD merge errors",
+        )
         return {
           cart: null,
           userErrors: [{ message: "Failed to add to cart" }],
@@ -128,7 +134,7 @@ export async function addCartLines(
     { variables: { cartId, lines } },
   )
   if (errors) {
-    console.error("CART_LINES_ADD errors", errors)
+    log.error({ errors, cartId }, "CART_LINES_ADD errors")
     return { cart: null, userErrors: [{ message: "Failed to add to cart" }] }
   }
   return unwrap(
@@ -148,7 +154,7 @@ export async function updateCartLines(
     { variables: { cartId, lines } },
   )
   if (errors) {
-    console.error("CART_LINES_UPDATE errors", errors)
+    log.error({ errors, cartId }, "CART_LINES_UPDATE errors")
     return { cart: null, userErrors: [{ message: "Failed to update cart" }] }
   }
   return unwrap(
@@ -168,7 +174,7 @@ export async function removeCartLines(
     { variables: { cartId, lineIds } },
   )
   if (errors) {
-    console.error("CART_LINES_REMOVE errors", errors)
+    log.error({ errors, cartId }, "CART_LINES_REMOVE errors")
     return {
       cart: null,
       userErrors: [{ message: "Failed to remove from cart" }],
@@ -191,7 +197,7 @@ export async function applyDiscountCode(
     { variables: { cartId, discountCodes } },
   )
   if (errors) {
-    console.error("CART_DISCOUNT_CODES_UPDATE errors", errors)
+    log.error({ errors, cartId }, "CART_DISCOUNT_CODES_UPDATE errors")
     return {
       cart: null,
       userErrors: [{ message: "Failed to apply discount" }],

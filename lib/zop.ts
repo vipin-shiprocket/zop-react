@@ -1,5 +1,8 @@
 import "server-only"
 import type { ZopApiResponse, ZopProductDetail } from "./zop-types"
+import logger from "./logger"
+
+const log = logger.child({ module: "lib/zop" })
 
 const ZOP_PRODUCT_DETAIL_URL =
   "https://sr-channel.shiprocket.in/v1/zop/inside/product/detail"
@@ -20,8 +23,9 @@ export async function fetchProductDetail(
     })
 
     if (!response.ok) {
-      console.error(
-        `Zop API returned ${response.status} for product ${productId}`,
+      log.error(
+        { status: response.status, productId },
+        "Zop API returned non-OK status",
       )
       return null
     }
@@ -46,8 +50,8 @@ export async function fetchProductDetail(
           }))
         : null,
     }
-  } catch (error) {
-    console.error(`Zop API fetch failed for product ${productId}:`, error)
+  } catch (err) {
+    log.error({ err, productId }, "Zop API fetch failed")
     return null
   }
 }
