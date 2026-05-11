@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
@@ -121,10 +122,13 @@ export function Footer({
       </div>
 
       <div className="px-5 md:px-10 py-4">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/zop_outline.svg"
           alt="ZOP"
+          width={128}
+          height={128}
+          fetchPriority="low"
+          loading="lazy"
           className="h-20 md:h-32 brightness-0 invert opacity-60"
         />
       </div>
