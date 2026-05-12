@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { Dialog as DialogPrimitive } from "radix-ui"
 import { Loader2, User, X } from "lucide-react"
@@ -185,10 +186,12 @@ export function Header({
           aria-label="Home"
           className="relative z-[1] shrink-0"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/zop_logo.svg"
             alt="ZOP"
+            width={48}
+            height={48}
+            priority
             className="rounded-full w-10 h-10 lg:w-12 lg:h-12"
           />
         </a>

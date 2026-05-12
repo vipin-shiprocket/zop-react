@@ -1,10 +1,8 @@
 "use client"
 
 import { useTransition } from "react"
-import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
-  buildVariantUriQuery,
   getOptionAvailability,
   type SelectedOptions,
 } from "@/lib/product-variants"
@@ -17,6 +15,7 @@ interface ProductFormProps {
   product: Product
   selectedOptions: SelectedOptions
   selectedVariant: ProductVariant | null
+  onOptionChange: (optionName: string, optionValue: string) => void
 }
 
 function isColorOption(values: Product["options"][number]["optionValues"]) {
@@ -105,8 +104,8 @@ export function ProductForm({
   product,
   selectedOptions,
   selectedVariant,
+  onOptionChange,
 }: ProductFormProps) {
-  const router = useRouter()
   const setCart = useCartStore((s) => s.setCart)
   const openCart = useCartStore((s) => s.open)
   const [isPending, startTransition] = useTransition()
@@ -161,11 +160,7 @@ export function ProductForm({
                     disabled={!exists}
                     onClick={() => {
                       if (selected) return
-                      const qs = buildVariantUriQuery(selectedOptions, {
-                        name: option.name,
-                        value: value.name,
-                      })
-                      router.replace(`?${qs}`, { scroll: false })
+                      onOptionChange(option.name, value.name)
                     }}
                     className={getOptionClassName(
                       isColor,

@@ -13,7 +13,7 @@ export function ProductMediaItem({
   index,
   className,
 }: ProductMediaItemProps) {
-  const isFirst = index === 0
+  const isFirst = index === 0;
 
   if (media.__typename === "MediaImage") {
     const image = media.image

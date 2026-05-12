@@ -6,6 +6,7 @@ import { calcDiscountPercentage, parseGid } from "@/lib/utils"
 import {
   findSelectedVariant,
   readSelectedOptionsFromParams,
+  type SelectedOptions,
 } from "@/lib/product-variants"
 import type {
   CollectionProductsQuery,
@@ -64,20 +65,37 @@ export function ProductPageClient({
   const openCart = useCartStore((s) => s.open)
   const [, startTransition] = useTransition()
 
-  const { selectedOptions, selectedVariant } = useMemo(() => {
-    const fromParams = readSelectedOptionsFromParams(
-      new URLSearchParams(searchParams?.toString() ?? ""),
-      product,
-    )
-    const variant = findSelectedVariant(product, fromParams)
-    const merged = { ...fromParams }
-    if (variant) {
-      for (const so of variant.selectedOptions) {
-        if (!merged[so.name]) merged[so.name] = so.value
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>(
+    () => {
+      const fromParams = readSelectedOptionsFromParams(
+        new URLSearchParams(searchParams?.toString() ?? ""),
+        product,
+      )
+      const variant = findSelectedVariant(product, fromParams)
+      const merged = { ...fromParams }
+      if (variant) {
+        for (const so of variant.selectedOptions) {
+          if (!merged[so.name]) merged[so.name] = so.value
+        }
       }
+      return merged
+    },
+  )
+
+  const selectedVariant = useMemo(
+    () => findSelectedVariant(product, selectedOptions),
+    [product, selectedOptions],
+  )
+
+  const handleOptionChange = (optionName: string, optionValue: string) => {
+    const next = { ...selectedOptions, [optionName]: optionValue }
+    setSelectedOptions(next)
+    const params = new URLSearchParams()
+    for (const [k, v] of Object.entries(next)) {
+      if (v) params.set(k, v)
     }
-    return { selectedOptions: merged, selectedVariant: variant }
-  }, [searchParams, product])
+    window.history.replaceState(null, "", `?${params.toString()}`)
+  }
 
   const validCompareAtPrice: Money | null =
     selectedVariant?.compareAtPrice &&
@@ -155,6 +173,7 @@ export function ProductPageClient({
               product={product}
               selectedOptions={selectedOptions}
               selectedVariant={selectedVariant}
+              onOptionChange={handleOptionChange}
             />
           </div>
 
